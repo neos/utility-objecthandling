@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\Flow\Utility;
+namespace Neos\Utility;
 
 /*
  * This file is part of the Neos.Utility.ObjectHandling package.
@@ -13,7 +13,7 @@ namespace TYPO3\Flow\Utility;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Proxy\Proxy;
-use TYPO3\Flow\Utility\Exception\InvalidTypeException;
+use Neos\Utility\Exception\InvalidTypeException;
 
 /**
  * PHP type handling functions
