@@ -31,6 +31,8 @@ class DummyClassWithGettersAndSetters
     public $publicProperty;
     public $publicProperty2 = 42;
 
+    public $shouldNotBePickedUp;
+
     public function setProperty($property)
     {
         $this->property = $property;
