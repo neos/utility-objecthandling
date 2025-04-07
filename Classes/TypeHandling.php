@@ -195,7 +195,7 @@ abstract class TypeHandling
      * Return simple type or class for object
      *
      * @param mixed $value
-     * @return string
+     * @return ($value is object ? class-string : string)
      */
     public static function getTypeForValue($value): string
     {
