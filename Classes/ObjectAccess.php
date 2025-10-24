@@ -67,9 +67,11 @@ abstract class ObjectAccess
      */
     public static function getProperty($subject, $propertyName, bool $forceDirectAccess = false)
     {
+        /** @phpstan-ignore booleanAnd.alwaysFalse (annotations may be wrong) */
         if (!is_object($subject) && !is_array($subject)) {
             throw new \InvalidArgumentException('$subject must be an object or array, ' . gettype($subject) . ' given.', 1237301367);
         }
+        /** @phpstan-ignore booleanAnd.alwaysFalse (annotations may be wrong) */
         if (!is_string($propertyName) && !is_int($propertyName)) {
             throw new \InvalidArgumentException('Given property name/index is not of type string or integer.', 1231178303);
         }
@@ -243,6 +245,7 @@ abstract class ObjectAccess
      */
     public static function setProperty(&$subject, $propertyName, $propertyValue, bool $forceDirectAccess = false): bool
     {
+        /** @phpstan-ignore booleanAnd.alwaysFalse (annotations may be wrong) */
         if (!is_string($propertyName) && !is_int($propertyName)) {
             throw new \InvalidArgumentException('Given property name/index is not of type string or integer.', 1231178878);
         }
@@ -376,11 +379,11 @@ abstract class ObjectAccess
      */
     public static function isPropertySettable($object, string $propertyName): bool
     {
-        /** @var string $className safe for objects */
         if (!is_object($object)) {
             throw new \InvalidArgumentException('$object must be an object, ' . gettype($object) . ' given.', 1259828920);
         }
 
+        /** @var string $className safe for objects */
         $className = TypeHandling::getTypeForValue($object);
         if (($object instanceof \stdClass && array_key_exists($propertyName, get_object_vars($object))) || array_key_exists($propertyName, get_class_vars($className))) {
             return true;
@@ -409,6 +412,9 @@ abstract class ObjectAccess
             return true;
         }
         $className = TypeHandling::getTypeForValue($object);
+        if ($className === false) {
+            return false;
+        }
         return array_key_exists($propertyName, get_class_vars($className));
     }
 
