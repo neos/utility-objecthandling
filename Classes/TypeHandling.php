@@ -195,18 +195,19 @@ abstract class TypeHandling
      * Return simple type or class for object
      *
      * @param mixed $value
+     * @return string
      */
-    public static function getTypeForValue($value): string|false
+    public static function getTypeForValue($value): string
     {
         if (is_object($value)) {
             if ($value instanceof Proxy) {
                 $type = get_parent_class($value);
-            } else {
-                $type = get_class($value);
+                if ($type !== false) {
+                    return $type;
+                }
             }
-        } else {
-            $type = gettype($value);
+            return get_class($value);
         }
-        return $type;
+        return gettype($value);
     }
 }

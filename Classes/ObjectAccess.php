@@ -59,13 +59,21 @@ abstract class ObjectAccess
      * - else, throw exception
      *
      * @param object|array<mixed> $subject Object or array to get the property from
-     * @param string|integer $propertyName Name or index of the property to retrieve
+     * @param string|int $propertyName Name or index of the property to retrieve
      * @param boolean $forceDirectAccess Directly access property using reflection(!)
      * @return mixed Value of the property
+     * @throws \InvalidArgumentException in case $subject was not an object or $propertyName was not a string
      * @throws PropertyNotAccessibleException if the property was not accessible
      */
-    public static function getProperty(object|array $subject, string|int $propertyName, bool $forceDirectAccess = false)
+    public static function getProperty($subject, $propertyName, bool $forceDirectAccess = false)
     {
+        if (!is_object($subject) && !is_array($subject)) {
+            throw new \InvalidArgumentException('$subject must be an object or array, ' . gettype($subject) . ' given.', 1237301367);
+        }
+        if (!is_string($propertyName) && !is_int($propertyName)) {
+            throw new \InvalidArgumentException('Given property name/index is not of type string or integer.', 1231178303);
+        }
+
         $propertyExists = false;
         $propertyValue = self::getPropertyInternal($subject, $propertyName, $forceDirectAccess, $propertyExists);
         if ($propertyExists === true) {
@@ -108,7 +116,6 @@ abstract class ObjectAccess
         }
 
         $propertyExists = true;
-        /** @var string $className safe for objects */
         $className = TypeHandling::getTypeForValue($subject);
 
         if ($forceDirectAccess === true) {
@@ -232,19 +239,27 @@ abstract class ObjectAccess
      * @param mixed $propertyValue Value of the property
      * @param boolean $forceDirectAccess directly access property using reflection(!)
      * @return boolean true if the property could be set, false otherwise
+     * @throws \InvalidArgumentException in case $object was not an object or $propertyName was not a string
      */
-    public static function setProperty(array|object &$subject, string|int $propertyName, $propertyValue, bool $forceDirectAccess = false): bool
+    public static function setProperty(&$subject, $propertyName, $propertyValue, bool $forceDirectAccess = false): bool
     {
+        if (!is_string($propertyName) && !is_int($propertyName)) {
+            throw new \InvalidArgumentException('Given property name/index is not of type string or integer.', 1231178878);
+        }
+
         if (is_array($subject)) {
             $subject[$propertyName] = $propertyValue;
             return true;
+        }
+
+        if (!is_object($subject)) {
+            throw new \InvalidArgumentException('subject must be an object or array, ' . gettype($subject) . ' given.', 1237301368);
         }
 
         if ($forceDirectAccess === true) {
             if (!is_string($propertyName)) {
                 throw new \InvalidArgumentException('Given property name is not of type string.', 1648244846);
             }
-            /** @var string $className safe for objects */
             $className = TypeHandling::getTypeForValue($subject);
             if (property_exists($className, $propertyName)) {
                 $propertyReflection = new \ReflectionProperty($className, $propertyName);
@@ -282,14 +297,16 @@ abstract class ObjectAccess
      * @return array<int,string> Array of all gettable property names
      * @throws \InvalidArgumentException
      */
-    public static function getGettablePropertyNames(object $object): array
+    public static function getGettablePropertyNames($object): array
     {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('$object must be an object, ' . gettype($object) . ' given.', 1237301369);
+        }
         if ($object instanceof \stdClass) {
             $declaredPropertyNames = array_keys(get_object_vars($object));
             $className = 'stdClass';
             unset(self::$gettablePropertyNamesCache[$className]);
         } else {
-            /** @var string $className safe for objects */
             $className = TypeHandling::getTypeForValue($object);
             $declaredPropertyNames = array_keys(get_class_vars($className));
         }
@@ -326,12 +343,14 @@ abstract class ObjectAccess
      * @return array<int,string> Array of all settable property names
      * @throws \InvalidArgumentException
      */
-    public static function getSettablePropertyNames(object $object): array
+    public static function getSettablePropertyNames($object): array
     {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('$object must be an object, ' . gettype($object) . ' given.', 1264022994);
+        }
         if ($object instanceof \stdClass) {
             $declaredPropertyNames = array_keys(get_object_vars($object));
         } else {
-            /** @var string $className safe for object */
             $className = TypeHandling::getTypeForValue($object);
             $declaredPropertyNames = array_keys(get_class_vars($className));
         }
@@ -355,9 +374,13 @@ abstract class ObjectAccess
      * @return boolean
      * @throws \InvalidArgumentException
      */
-    public static function isPropertySettable(object $object, string $propertyName): bool
+    public static function isPropertySettable($object, string $propertyName): bool
     {
         /** @var string $className safe for objects */
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('$object must be an object, ' . gettype($object) . ' given.', 1259828920);
+        }
+
         $className = TypeHandling::getTypeForValue($object);
         if (($object instanceof \stdClass && array_key_exists($propertyName, get_object_vars($object))) || array_key_exists($propertyName, get_class_vars($className))) {
             return true;
@@ -373,19 +396,18 @@ abstract class ObjectAccess
      * @return boolean
      * @throws \InvalidArgumentException
      */
-    public static function isPropertyGettable(object $object, string $propertyName): bool
+    public static function isPropertyGettable($object, string $propertyName): bool
     {
-        if (
-            $object instanceof \ArrayAccess && $object->offsetExists($propertyName)
-            || $object instanceof \stdClass && array_key_exists($propertyName, get_object_vars($object))
-        ) {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('$object must be an object, ' . gettype($object) . ' given.', 1259828921);
+        }
+        if (($object instanceof \ArrayAccess && $object->offsetExists($propertyName)) || ($object instanceof \stdClass && array_key_exists($propertyName, get_object_vars($object)))) {
             return true;
         }
         $uppercasePropertyName = ucfirst($propertyName);
         if (is_callable([$object, 'get' . $uppercasePropertyName]) || is_callable([$object, 'is' . $uppercasePropertyName]) || is_callable([$object, 'has' . $uppercasePropertyName])) {
             return true;
         }
-        /** @var string $className safe for objects */
         $className = TypeHandling::getTypeForValue($object);
         return array_key_exists($propertyName, get_class_vars($className));
     }
@@ -396,10 +418,14 @@ abstract class ObjectAccess
      *
      * @param object $object Object to get all properties from.
      * @return array<string,mixed> Associative array of all properties.
+     * @throws \InvalidArgumentException
      * @todo What to do with ArrayAccess
      */
-    public static function getGettableProperties(object $object): array
+    public static function getGettableProperties($object): array
     {
+        if (!is_object($object)) {
+            throw new \InvalidArgumentException('$object must be an object, ' . gettype($object) . ' given.', 1237301370);
+        }
         $properties = [];
         foreach (self::getGettablePropertyNames($object) as $propertyName) {
             $propertyExists = false;
