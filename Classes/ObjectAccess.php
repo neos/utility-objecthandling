@@ -412,9 +412,6 @@ abstract class ObjectAccess
             return true;
         }
         $className = TypeHandling::getTypeForValue($object);
-        if ($className === false) {
-            return false;
-        }
         return array_key_exists($propertyName, get_class_vars($className));
     }
 
