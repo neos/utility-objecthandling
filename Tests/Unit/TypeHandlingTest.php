@@ -40,7 +40,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for parseTypeReturnsArrayWithInformation
      */
-    public function types()
+    public static function types()
     {
         return [
             ['null', ['type' => 'null', 'elementType' => null, 'nullable' => true]],
@@ -81,7 +81,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for extractCollectionTypeReturnsOnlyTheMainType
      */
-    public function compositeTypes()
+    public static function compositeTypes()
     {
         return [
             ['integer', 'integer'],
@@ -118,7 +118,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for normalizeTypesReturnsNormalizedType
      */
-    public function normalizeTypes()
+    public static function normalizeTypes()
     {
         return [
             ['int', 'integer'],
@@ -140,7 +140,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isLiteralReturnsFalseForNonLiteralTypes
      */
-    public function nonLiteralTypes()
+    public static function nonLiteralTypes()
     {
         return [
             ['null'],
@@ -164,7 +164,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isLiteralReturnsTrueForLiterals
      */
-    public function literals()
+    public static function literals()
     {
         return [
             ['integer'],
@@ -189,7 +189,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isSimpleTypeReturnsTrueForSimpleType
      */
-    public function simpleTypes()
+    public static function simpleTypes()
     {
         return [
             ['null', true],
@@ -231,7 +231,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isCollectionTypeReturnsTrueForCollectionType
      */
-    public function collectionTypes()
+    public static function collectionTypes()
     {
         return [
             ['null', false],
@@ -267,7 +267,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isUnionTypeReturnsTrueForUnionType
      */
-    public function unionAndIntersectionTypes()
+    public static function unionAndIntersectionTypes()
     {
         return [
             ['null', false, false],
@@ -307,7 +307,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for stripNullableTypesReturnsOnlyTheType
      */
-    public function nullableTypes()
+    public static function nullableTypes()
     {
         return [
             ['integer|null', 'integer'],
