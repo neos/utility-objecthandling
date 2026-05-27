@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Neos\Utility\ObjectHandling\Tests\Unit;
 
 /*
@@ -17,7 +20,7 @@ use Neos\Utility\TypeHandling;
 /**
  * Testcase for the Utility\TypeHandling class
  */
-class TypeHandlingTest extends \PHPUnit\Framework\TestCase
+final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
@@ -40,29 +43,26 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for parseTypeReturnsArrayWithInformation
      */
-    public static function types()
+    public static function types(): \Iterator
     {
-        return [
-            ['null', ['type' => 'null', 'elementType' => null, 'nullable' => true]],
-            ['int', ['type' => 'integer', 'elementType' => null, 'nullable' => false]],
-            ['string', ['type' => 'string', 'elementType' => null, 'nullable' => false]],
-            ['DateTime', ['type' => 'DateTime', 'elementType' => null, 'nullable' => false]],
-            ['DateTimeImmutable', ['type' => 'DateTimeImmutable', 'elementType' => null, 'nullable' => false]],
-            ['Neos\Foo\Bar', ['type' => 'Neos\Foo\Bar', 'elementType' => null, 'nullable' => false]],
-            ['\Neos\Foo\Bar', ['type' => 'Neos\Foo\Bar', 'elementType' => null, 'nullable' => false]],
-            ['\stdClass', ['type' => 'stdClass', 'elementType' => null, 'nullable' => false]],
-            ['array<integer>', ['type' => 'array', 'elementType' => 'integer', 'nullable' => false]],
-            ['ArrayObject<string>', ['type' => 'ArrayObject', 'elementType' => 'string', 'nullable' => false]],
-            ['SplObjectStorage<Neos\Foo\Bar>', ['type' => 'SplObjectStorage', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]],
-            ['SplObjectStorage<\Neos\Foo\Bar>', ['type' => 'SplObjectStorage', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]],
-            ['Doctrine\Common\Collections\Collection<\Neos\Foo\Bar>', ['type' => 'Doctrine\Common\Collections\Collection', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]],
-            ['Doctrine\Common\Collections\ArrayCollection<\Neos\Foo\Bar>', ['type' => 'Doctrine\Common\Collections\ArrayCollection', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]],
-            ['\SomeClass with appendix', ['type' => 'SomeClass', 'elementType' => null, 'nullable' => false]],
-
-            // Types might also contain underscores at various points.
-            ['Doctrine\Common\Collections\Special_Class_With_Underscores', ['type' => 'Doctrine\Common\Collections\Special_Class_With_Underscores', 'elementType' => null, 'nullable' => false]],
-            ['Doctrine\Common\Collections\ArrayCollection<\Neos\Foo_\Bar>', ['type' => 'Doctrine\Common\Collections\ArrayCollection', 'elementType' => 'Neos\Foo_\Bar', 'nullable' => false]],
-        ];
+        yield ['null', ['type' => 'null', 'elementType' => null, 'nullable' => true]];
+        yield ['int', ['type' => 'integer', 'elementType' => null, 'nullable' => false]];
+        yield ['string', ['type' => 'string', 'elementType' => null, 'nullable' => false]];
+        yield ['DateTime', ['type' => 'DateTime', 'elementType' => null, 'nullable' => false]];
+        yield ['DateTimeImmutable', ['type' => 'DateTimeImmutable', 'elementType' => null, 'nullable' => false]];
+        yield ['Neos\Foo\Bar', ['type' => 'Neos\Foo\Bar', 'elementType' => null, 'nullable' => false]];
+        yield ['\Neos\Foo\Bar', ['type' => 'Neos\Foo\Bar', 'elementType' => null, 'nullable' => false]];
+        yield ['\stdClass', ['type' => 'stdClass', 'elementType' => null, 'nullable' => false]];
+        yield ['array<integer>', ['type' => 'array', 'elementType' => 'integer', 'nullable' => false]];
+        yield ['ArrayObject<string>', ['type' => 'ArrayObject', 'elementType' => 'string', 'nullable' => false]];
+        yield ['SplObjectStorage<Neos\Foo\Bar>', ['type' => 'SplObjectStorage', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]];
+        yield ['SplObjectStorage<\Neos\Foo\Bar>', ['type' => 'SplObjectStorage', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]];
+        yield ['Doctrine\Common\Collections\Collection<\Neos\Foo\Bar>', ['type' => 'Doctrine\Common\Collections\Collection', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]];
+        yield ['Doctrine\Common\Collections\ArrayCollection<\Neos\Foo\Bar>', ['type' => 'Doctrine\Common\Collections\ArrayCollection', 'elementType' => 'Neos\Foo\Bar', 'nullable' => false]];
+        yield ['\SomeClass with appendix', ['type' => 'SomeClass', 'elementType' => null, 'nullable' => false]];
+        // Types might also contain underscores at various points.
+        yield ['Doctrine\Common\Collections\Special_Class_With_Underscores', ['type' => 'Doctrine\Common\Collections\Special_Class_With_Underscores', 'elementType' => null, 'nullable' => false]];
+        yield ['Doctrine\Common\Collections\ArrayCollection<\Neos\Foo_\Bar>', ['type' => 'Doctrine\Common\Collections\ArrayCollection', 'elementType' => 'Neos\Foo_\Bar', 'nullable' => false]];
     }
 
     /**
@@ -81,25 +81,22 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for extractCollectionTypeReturnsOnlyTheMainType
      */
-    public static function compositeTypes()
+    public static function compositeTypes(): \Iterator
     {
-        return [
-            ['integer', 'integer'],
-            ['int', 'int'],
-            ['array', 'array'],
-            ['ArrayObject', 'ArrayObject'],
-            ['SplObjectStorage', 'SplObjectStorage'],
-            ['Doctrine\Common\Collections\Collection', 'Doctrine\Common\Collections\Collection'],
-            ['Doctrine\Common\Collections\ArrayCollection', 'Doctrine\Common\Collections\ArrayCollection'],
-            ['array<\Some\Other\Class>', 'array'],
-            ['ArrayObject<int>', 'ArrayObject'],
-            ['SplObjectStorage<\object>', 'SplObjectStorage'],
-            ['Doctrine\Common\Collections\Collection<ElementType>', 'Doctrine\Common\Collections\Collection'],
-            ['Doctrine\Common\Collections\ArrayCollection<>', 'Doctrine\Common\Collections\ArrayCollection'],
-
-            // Types might also contain underscores at various points.
-            ['Doctrine\Common\Collections\Array_Collection<>', 'Doctrine\Common\Collections\Array_Collection'],
-        ];
+        yield ['integer', 'integer'];
+        yield ['int', 'int'];
+        yield ['array', 'array'];
+        yield ['ArrayObject', 'ArrayObject'];
+        yield ['SplObjectStorage', 'SplObjectStorage'];
+        yield ['Doctrine\Common\Collections\Collection', 'Doctrine\Common\Collections\Collection'];
+        yield ['Doctrine\Common\Collections\ArrayCollection', 'Doctrine\Common\Collections\ArrayCollection'];
+        yield ['array<\Some\Other\Class>', 'array'];
+        yield ['ArrayObject<int>', 'ArrayObject'];
+        yield ['SplObjectStorage<\object>', 'SplObjectStorage'];
+        yield ['Doctrine\Common\Collections\Collection<ElementType>', 'Doctrine\Common\Collections\Collection'];
+        yield ['Doctrine\Common\Collections\ArrayCollection<>', 'Doctrine\Common\Collections\ArrayCollection'];
+        // Types might also contain underscores at various points.
+        yield ['Doctrine\Common\Collections\Array_Collection<>', 'Doctrine\Common\Collections\Array_Collection'];
     }
 
     /**
@@ -108,7 +105,7 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
      */
     public function extractCollectionTypeReturnsOnlyTheMainType(string $type, string $expectedResult)
     {
-        self::assertEquals(
+        self::assertSame(
             $expectedResult,
             TypeHandling::truncateElementType($type),
             'Failed for ' . $type
@@ -118,14 +115,12 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for normalizeTypesReturnsNormalizedType
      */
-    public static function normalizeTypes()
+    public static function normalizeTypes(): \Iterator
     {
-        return [
-            ['int', 'integer'],
-            ['double', 'float'],
-            ['bool', 'boolean'],
-            ['string', 'string']
-        ];
+        yield ['int', 'integer'];
+        yield ['double', 'float'];
+        yield ['bool', 'boolean'];
+        yield ['string', 'string'];
     }
 
     /**
@@ -134,22 +129,20 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
      */
     public function normalizeTypesReturnsNormalizedType(string $type, string $normalized)
     {
-        self::assertEquals(TypeHandling::normalizeType($type), $normalized);
+        self::assertSame(TypeHandling::normalizeType($type), $normalized);
     }
 
     /**
      * data provider for isLiteralReturnsFalseForNonLiteralTypes
      */
-    public static function nonLiteralTypes()
+    public static function nonLiteralTypes(): \Iterator
     {
-        return [
-            ['null'],
-            ['DateTime'],
-            ['\Foo\Bar'],
-            ['array'],
-            ['ArrayObject'],
-            ['stdClass']
-        ];
+        yield ['null'];
+        yield ['DateTime'];
+        yield ['\Foo\Bar'];
+        yield ['array'];
+        yield ['ArrayObject'];
+        yield ['stdClass'];
     }
 
     /**
@@ -164,17 +157,15 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isLiteralReturnsTrueForLiterals
      */
-    public static function literals()
+    public static function literals(): \Iterator
     {
-        return [
-            ['integer'],
-            ['int'],
-            ['float'],
-            ['double'],
-            ['boolean'],
-            ['bool'],
-            ['string']
-        ];
+        yield ['integer'];
+        yield ['int'];
+        yield ['float'];
+        yield ['double'];
+        yield ['boolean'];
+        yield ['bool'];
+        yield ['string'];
     }
 
     /**
@@ -189,34 +180,32 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isSimpleTypeReturnsTrueForSimpleType
      */
-    public static function simpleTypes()
+    public static function simpleTypes(): \Iterator
     {
-        return [
-            ['null', true],
-            ['integer', true],
-            ['int', true],
-            ['float', true],
-            ['double', true],
-            ['boolean', true],
-            ['bool', true],
-            ['string', true],
-            ['true', true],
-            ['false', true],
-            ['SomeClassThatIsUnknownToPhpAtThisPoint', false],
-            ['array', true],
-            ['ArrayObject', false],
-            ['SplObjectStorage', false],
-            ['Doctrine\Common\Collections\Collection', false],
-            ['Doctrine\Common\Collections\ArrayCollection', false],
-            ['IteratorAggregate', false],
-            ['Iterator', false],
-            ['resource', false],
-            ['parent', false],
-            ['static', false],
-            ['self', false],
-            ['void', false],
-            ['never', false]
-        ];
+        yield ['null', true];
+        yield ['integer', true];
+        yield ['int', true];
+        yield ['float', true];
+        yield ['double', true];
+        yield ['boolean', true];
+        yield ['bool', true];
+        yield ['string', true];
+        yield ['true', true];
+        yield ['false', true];
+        yield ['SomeClassThatIsUnknownToPhpAtThisPoint', false];
+        yield ['array', true];
+        yield ['ArrayObject', false];
+        yield ['SplObjectStorage', false];
+        yield ['Doctrine\Common\Collections\Collection', false];
+        yield ['Doctrine\Common\Collections\ArrayCollection', false];
+        yield ['IteratorAggregate', false];
+        yield ['Iterator', false];
+        yield ['resource', false];
+        yield ['parent', false];
+        yield ['static', false];
+        yield ['self', false];
+        yield ['void', false];
+        yield ['never', false];
     }
 
     /**
@@ -231,28 +220,26 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isCollectionTypeReturnsTrueForCollectionType
      */
-    public static function collectionTypes()
+    public static function collectionTypes(): \Iterator
     {
-        return [
-            ['null', false],
-            ['integer', false],
-            ['int', false],
-            ['float', false],
-            ['double', false],
-            ['boolean', false],
-            ['bool', false],
-            ['string', false],
-            ['true', false],
-            ['false', false],
-            ['SomeClassThatIsUnknownToPhpAtThisPoint', false],
-            ['array', true],
-            ['ArrayObject', true],
-            ['SplObjectStorage', true],
-            ['Doctrine\Common\Collections\Collection', true],
-            ['Doctrine\Common\Collections\ArrayCollection', true],
-            ['IteratorAggregate', true],
-            ['Iterator', true]
-        ];
+        yield ['null', false];
+        yield ['integer', false];
+        yield ['int', false];
+        yield ['float', false];
+        yield ['double', false];
+        yield ['boolean', false];
+        yield ['bool', false];
+        yield ['string', false];
+        yield ['true', false];
+        yield ['false', false];
+        yield ['SomeClassThatIsUnknownToPhpAtThisPoint', false];
+        yield ['array', true];
+        yield ['ArrayObject', true];
+        yield ['SplObjectStorage', true];
+        yield ['Doctrine\Common\Collections\Collection', true];
+        yield ['Doctrine\Common\Collections\ArrayCollection', true];
+        yield ['IteratorAggregate', true];
+        yield ['Iterator', true];
     }
 
     /**
@@ -267,23 +254,21 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for isUnionTypeReturnsTrueForUnionType
      */
-    public static function unionAndIntersectionTypes()
+    public static function unionAndIntersectionTypes(): \Iterator
     {
-        return [
-            ['null', false, false],
-            ['integer', false, false],
-            ['int', false, false],
-            ['float', false, false],
-            ['double', false, false],
-            ['boolean', false, false],
-            ['integer|null', true, false],
-            ['integer|string', true, false],
-            ['integer|false', true, false],
-            ['SomeClassThatIsUnknownToPhpAtThisPoint|false', true, false],
-            ['SomeClassThatIsUnknownToPhpAtThisPoint', false, false],
-            ['ArrayObject', false, false],
-            ['Iterator&Traversable', false, true]
-        ];
+        yield ['null', false, false];
+        yield ['integer', false, false];
+        yield ['int', false, false];
+        yield ['float', false, false];
+        yield ['double', false, false];
+        yield ['boolean', false, false];
+        yield ['integer|null', true, false];
+        yield ['integer|string', true, false];
+        yield ['integer|false', true, false];
+        yield ['SomeClassThatIsUnknownToPhpAtThisPoint|false', true, false];
+        yield ['SomeClassThatIsUnknownToPhpAtThisPoint', false, false];
+        yield ['ArrayObject', false, false];
+        yield ['Iterator&Traversable', false, true];
     }
 
     /**
@@ -307,35 +292,30 @@ class TypeHandlingTest extends \PHPUnit\Framework\TestCase
     /**
      * data provider for stripNullableTypesReturnsOnlyTheType
      */
-    public static function nullableTypes()
+    public static function nullableTypes(): \Iterator
     {
-        return [
-            ['integer|null', 'integer'],
-            ['null|int', 'int'],
-            ['?int', 'int'],
-            ['array|null', 'array'],
-            ['?array', 'array'],
-            ['ArrayObject|null', 'ArrayObject'],
-            ['null|SplObjectStorage', 'SplObjectStorage'],
-            ['Doctrine\Common\Collections\Collection|null', 'Doctrine\Common\Collections\Collection'],
-            ['Doctrine\Common\Collections\ArrayCollection|null', 'Doctrine\Common\Collections\ArrayCollection'],
-            ['array<\Some\Other\Class>|null', 'array<\Some\Other\Class>'],
-            ['ArrayObject<int>|null', 'ArrayObject<int>'],
-            ['?ArrayObject<int>', 'ArrayObject<int>'],
-            ['SplObjectStorage<\object>|null', 'SplObjectStorage<\object>'],
-            ['Doctrine\Common\Collections\Collection<ElementType>|null', 'Doctrine\Common\Collections\Collection<ElementType>'],
-            ['Doctrine\Common\Collections\ArrayCollection<string>|null', 'Doctrine\Common\Collections\ArrayCollection<string>'],
-
-            // This is not even a use case for Flow and is bad API design, but we still should handle it correctly.
-            ['integer|null|bool', 'integer|bool'],
-            ['?int|null', 'int'],
-
-            // Types might also contain underscores at various points.
-            ['null|Doctrine\Common\Collections\Array_Collection', 'Doctrine\Common\Collections\Array_Collection'],
-
-            // This is madness. This... is... NULL!
-            ['null', 'null']
-        ];
+        yield ['integer|null', 'integer'];
+        yield ['null|int', 'int'];
+        yield ['?int', 'int'];
+        yield ['array|null', 'array'];
+        yield ['?array', 'array'];
+        yield ['ArrayObject|null', 'ArrayObject'];
+        yield ['null|SplObjectStorage', 'SplObjectStorage'];
+        yield ['Doctrine\Common\Collections\Collection|null', 'Doctrine\Common\Collections\Collection'];
+        yield ['Doctrine\Common\Collections\ArrayCollection|null', 'Doctrine\Common\Collections\ArrayCollection'];
+        yield ['array<\Some\Other\Class>|null', 'array<\Some\Other\Class>'];
+        yield ['ArrayObject<int>|null', 'ArrayObject<int>'];
+        yield ['?ArrayObject<int>', 'ArrayObject<int>'];
+        yield ['SplObjectStorage<\object>|null', 'SplObjectStorage<\object>'];
+        yield ['Doctrine\Common\Collections\Collection<ElementType>|null', 'Doctrine\Common\Collections\Collection<ElementType>'];
+        yield ['Doctrine\Common\Collections\ArrayCollection<string>|null', 'Doctrine\Common\Collections\ArrayCollection<string>'];
+        // This is not even a use case for Flow and is bad API design, but we still should handle it correctly.
+        yield ['integer|null|bool', 'integer|bool'];
+        yield ['?int|null', 'int'];
+        // Types might also contain underscores at various points.
+        yield ['null|Doctrine\Common\Collections\Array_Collection', 'Doctrine\Common\Collections\Array_Collection'];
+        // This is madness. This... is... NULL!
+        yield ['null', 'null'];
     }
 
     /**
