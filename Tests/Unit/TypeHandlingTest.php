@@ -13,27 +13,25 @@ namespace Neos\Utility\ObjectHandling\Tests\Unit;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Neos\Utility\Exception\InvalidTypeException;
 use Neos\Utility\TypeHandling;
 
 /**
  * Testcase for the Utility\TypeHandling class
  */
-final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
+final class TypeHandlingTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function parseTypeThrowsExceptionOnInvalidType()
     {
         $this->expectException(InvalidTypeException::class);
         TypeHandling::parseType('$something');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parseTypeThrowsExceptionOnInvalidElementTypeHint()
     {
         $this->expectException(InvalidTypeException::class);
@@ -65,10 +63,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['Doctrine\Common\Collections\ArrayCollection<\Neos\Foo_\Bar>', ['type' => 'Doctrine\Common\Collections\ArrayCollection', 'elementType' => 'Neos\Foo_\Bar', 'nullable' => false]];
     }
 
-    /**
-     * @test
-     * @dataProvider types
-     */
+    #[DataProvider('types')]
+    #[Test]
     public function parseTypeReturnsArrayWithInformation(string $type, array $expectedResult)
     {
         self::assertEquals(
@@ -99,10 +95,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['Doctrine\Common\Collections\Array_Collection<>', 'Doctrine\Common\Collections\Array_Collection'];
     }
 
-    /**
-     * @test
-     * @dataProvider compositeTypes
-     */
+    #[DataProvider('compositeTypes')]
+    #[Test]
     public function extractCollectionTypeReturnsOnlyTheMainType(string $type, string $expectedResult)
     {
         self::assertSame(
@@ -123,10 +117,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['string', 'string'];
     }
 
-    /**
-     * @test
-     * @dataProvider normalizeTypes
-     */
+    #[DataProvider('normalizeTypes')]
+    #[Test]
     public function normalizeTypesReturnsNormalizedType(string $type, string $normalized)
     {
         self::assertSame(TypeHandling::normalizeType($type), $normalized);
@@ -145,10 +137,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['stdClass'];
     }
 
-    /**
-     * @test
-     * @dataProvider nonliteralTypes
-     */
+    #[DataProvider('nonliteralTypes')]
+    #[Test]
     public function isLiteralReturnsFalseForNonLiteralTypes(string $type)
     {
         self::assertFalse(TypeHandling::isLiteral($type), 'Failed for ' . $type);
@@ -168,10 +158,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['string'];
     }
 
-    /**
-     * @test
-     * @dataProvider literals
-     */
+    #[DataProvider('literals')]
+    #[Test]
     public function isLiteralReturnsTrueForLiterals(string $type)
     {
         self::assertTrue(TypeHandling::isLiteral($type), 'Failed for ' . $type);
@@ -208,10 +196,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['never', false];
     }
 
-    /**
-     * @test
-     * @dataProvider simpleTypes
-     */
+    #[DataProvider('simpleTypes')]
+    #[Test]
     public function isSimpleTypeReturnsTrueForSimpleType(string $type, bool $expected)
     {
         self::assertSame($expected, TypeHandling::isSimpleType($type), 'Failed for ' . $type);
@@ -242,10 +228,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['Iterator', true];
     }
 
-    /**
-     * @test
-     * @dataProvider collectionTypes
-     */
+    #[DataProvider('collectionTypes')]
+    #[Test]
     public function isCollectionTypeReturnsTrueForCollectionType(string $type, bool $expected)
     {
         self::assertSame($expected, TypeHandling::isCollectionType($type), 'Failed for ' . $type);
@@ -271,19 +255,15 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['Iterator&Traversable', false, true];
     }
 
-    /**
-     * @test
-     * @dataProvider unionAndIntersectionTypes
-     */
+    #[DataProvider('unionAndIntersectionTypes')]
+    #[Test]
     public function isUnionTypeReturnsTrueForUnionType(string $type, bool $expectUnionType, bool $expectIntersectionType)
     {
         self::assertSame($expectUnionType, TypeHandling::isUnionType($type), 'Failed for ' . $type);
     }
 
-    /**
-     * @test
-     * @dataProvider unionAndIntersectionTypes
-     */
+    #[DataProvider('unionAndIntersectionTypes')]
+    #[Test]
     public function isIntersectionTypeReturnsTrueForIntersectionTypes(string $type, bool $expectUnionType, bool $expectIntersectionType)
     {
         self::assertSame($expectIntersectionType, TypeHandling::isIntersectionType($type), 'Failed for ' . $type);
@@ -318,10 +298,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         yield ['null', 'null'];
     }
 
-    /**
-     * @test
-     * @dataProvider nullableTypes
-     */
+    #[DataProvider('nullableTypes')]
+    #[Test]
     public function stripNullableTypesReturnsOnlyTheType($type, $expectedResult)
     {
         self::assertEquals(
@@ -331,10 +309,8 @@ final class TypeHandlingTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider nullableTypes
-     */
+    #[DataProvider('nullableTypes')]
+    #[Test]
     public function parseTypeReturnsNullableHint($type, $expectedResult)
     {
         try {
