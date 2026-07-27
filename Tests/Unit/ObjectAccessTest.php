@@ -1,4 +1,5 @@
 <?php
+
 namespace Neos\Utility\ObjectHandling\Tests\Unit;
 
 /*
@@ -15,8 +16,8 @@ use Neos\Utility\Exception\PropertyNotAccessibleException;
 use Neos\Utility\ObjectAccess;
 use Neos\Utility\ObjectHandling\Tests\Unit\Fixture\ArrayAccessClass;
 use Neos\Utility\ObjectHandling\Tests\Unit\Fixture\DummyClassWithGettersAndSetters;
-use Neos\Utility\ObjectHandling\Tests\Unit\Fixture\ProxiedClassWithPrivateProperty;
 use Neos\Utility\ObjectHandling\Tests\Unit\Fixture\Model\EntityWithDoctrineProxy;
+use Neos\Utility\ObjectHandling\Tests\Unit\Fixture\ProxiedClassWithPrivateProperty;
 use Neos\Utility\TypeHandling;
 
 require_once('Fixture/DummyClassWithGettersAndSetters.php');
